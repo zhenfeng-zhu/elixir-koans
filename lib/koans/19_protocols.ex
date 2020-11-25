@@ -21,6 +21,7 @@ defmodule Protocols do
   defmodule(Baker, do: defstruct(name: ""))
 
   defimpl School, for: Musician do
+    @spec enroll(atom | %{instrument: any, name: any}) :: <<_::64, _::_*8>>
     def enroll(musician) do
       "#{musician.name} signed up for #{musician.instrument}"
     end
@@ -34,17 +35,17 @@ defmodule Protocols do
     musician = %Musician{name: "Andre", instrument: "violin"}
     dancer = %Dancer{name: "Darcy", dance_style: "ballet"}
 
-    assert School.enroll(musician) == ___
-    assert School.enroll(dancer) == ___
+    assert School.enroll(musician) == "Andre signed up for violin"
+    assert School.enroll(dancer) == "Darcy enrolled for ballet"
   end
 
   koan "Sometimes we all use the same" do
     student = %Student{name: "Emily"}
-    assert School.enroll(student) == ___
+    assert School.enroll(student) == "Pupil enrolled at school"
   end
 
   koan "If you don't comply you can't get in" do
-    assert_raise ___, fn ->
+    assert_raise Protocol.UndefinedError, fn ->
       School.enroll(%Baker{name: "Delia"})
     end
   end
